@@ -1,0 +1,13 @@
+services:
+  backend:
+    build: ./backend
+    container_name: llm-watermarking-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - huggingface-cache:/root/.cache/huggingface
+    restart: unless-stopped
+
+volumes:
+  huggingface-cache:

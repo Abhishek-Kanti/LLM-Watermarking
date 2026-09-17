@@ -1,0 +1,237 @@
+import collections
+import json
+import threading
+import uuid
+
+import torch
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    LogitsProcessorList,
+    TextIteratorStreamer,
+)
+
+from .detector import detect_watermark
+from .watermark import WatermarkLogitsProcessor
+
+
+# In-memory LRU cache to preserve generated token IDs for token-exact detection
+generation_cache: collections.OrderedDict[str, dict] = collections.OrderedDict()
+CACHE_MAX_SIZE = 100
+
+
+MODEL_NAME = "Qwen/Qwen3-0.6B"
+
+app = FastAPI(title="LLM Watermarking Playground")
+
+
+print("Loading model...")
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_NAME,
+    torch_dtype="auto",
+    device_map="auto",
+)
+
+print("Model loaded!")
+
+
+class GenerateRequest(BaseModel):
+    prompt: str
+
+    watermark: bool = False
+    secret_key: str = "default-secret"
+
+    context_length: int = 4
+    gamma: float = 2.0
+    green_fraction: float = 0.5
+
+    temperature: float = 0.7
+    top_p: float = 0.9
+
+    max_tokens: int = 100
+    stream_format: str = "text"  # "text" (default) or "sse"
+
+
+class DetectRequest(BaseModel):
+    prompt: str
+    text: str | None = None
+    token_ids: list[int] | None = None
+    generation_id: str | None = None
+
+    secret_key: str = "default-secret"
+
+    context_length: int = 4
+    green_fraction: float = 0.5
+
+
+@app.get("/")
+def root():
+    return {
+        "message": "LLM Watermarking API is running"
+    }
+
+
+@app.post("/generate")
+def generate(request: GenerateRequest):
+
+    # Convert the user's prompt into a Qwen chat conversation.
+    messages = [
+        {
+            "role": "user",
+            "content": request.prompt,
+        }
+    ]
+
+    # Qwen's chat template converts the conversation into
+    # the exact token sequence expected by the model.
+    model_inputs = tokenizer.apply_chat_template(
+        messages,
+        tokenize=True,
+        add_generation_prompt=True,
+        return_tensors="pt",
+        return_dict=True,
+    ).to(model.device)
+
+    streamer = TextIteratorStreamer(
+        tokenizer,
+        skip_prompt=True,
+        skip_special_tokens=True,
+    )
+
+    generation_kwargs = {
+        **model_inputs,
+        "streamer": streamer,
+        "max_new_tokens": request.max_tokens,
+        "do_sample": True,
+        "temperature": request.temperature,
+        "top_p": request.top_p,
+    }
+
+    if request.watermark:
+
+        watermark_processor = WatermarkLogitsProcessor(
+            secret_key=request.secret_key,
+            context_length=request.context_length,
+            gamma=request.gamma,
+            green_fraction=request.green_fraction,
+        )
+
+        generation_kwargs["logits_processor"] = LogitsProcessorList(
+            [watermark_processor]
+        )
+
+    generation_id = str(uuid.uuid4())
+    generated_tokens_holder = []
+    full_text_holder = []
+
+    def generate_worker():
+        output_ids = model.generate(**generation_kwargs)
+        prompt_len = model_inputs["input_ids"].shape[1]
+        gen_token_ids = output_ids[0, prompt_len:].tolist()
+        generated_tokens_holder.extend(gen_token_ids)
+
+    thread = threading.Thread(
+        target=generate_worker,
+    )
+
+    thread.start()
+
+    def cache_generation():
+        generation_cache[generation_id] = {
+            "token_ids": list(generated_tokens_holder),
+            "prompt": request.prompt,
+            "text": "".join(full_text_holder),
+            "secret_key": request.secret_key,
+            "context_length": request.context_length,
+            "green_fraction": request.green_fraction,
+        }
+        if len(generation_cache) > CACHE_MAX_SIZE:
+            generation_cache.popitem(last=False)
+
+    headers = {
+        "X-Generation-ID": generation_id,
+        "Access-Control-Expose-Headers": "X-Generation-ID",
+    }
+
+    if request.stream_format == "sse":
+
+        def sse_stream():
+            for text in streamer:
+                full_text_holder.append(text)
+                yield f"data: {json.dumps({'text': text})}\n\n"
+
+            thread.join()
+            cache_generation()
+
+            yield f"data: {json.dumps({'done': True, 'generation_id': generation_id, 'token_ids': generated_tokens_holder})}\n\n"
+
+        return StreamingResponse(
+            sse_stream(),
+            media_type="text/event-stream",
+            headers=headers,
+        )
+
+    def text_stream():
+
+        for text in streamer:
+            full_text_holder.append(text)
+            yield text
+
+        thread.join()
+        cache_generation()
+
+    return StreamingResponse(
+        text_stream(),
+        media_type="text/plain",
+        headers=headers,
+    )
+
+
+@app.post("/detect")
+def detect(request: DetectRequest):
+
+    token_ids = request.token_ids
+
+    # If generation_id is provided, retrieve the preserved token IDs
+    if not token_ids and request.generation_id:
+        cached = generation_cache.get(request.generation_id)
+        if not cached:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Generation ID '{request.generation_id}' not found in cache.",
+            )
+        token_ids = cached["token_ids"]
+        if not request.prompt and cached.get("prompt"):
+            request.prompt = cached["prompt"]
+
+    result = detect_watermark(
+        prompt=request.prompt,
+        text=request.text,
+        token_ids=token_ids,
+        tokenizer=tokenizer,
+        vocab_size=model.config.vocab_size,
+        secret_key=request.secret_key,
+        context_length=request.context_length,
+        green_fraction=request.green_fraction,
+    )
+
+    if request.generation_id:
+        result["generation_id"] = request.generation_id
+
+    return result
+
+
+@app.get("/generations/{generation_id}")
+def get_generation(generation_id: str):
+    if generation_id not in generation_cache:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Generation ID '{generation_id}' not found in cache.",
+        )
+    return generation_cache[generation_id]
