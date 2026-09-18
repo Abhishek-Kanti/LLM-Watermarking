@@ -3,10 +3,12 @@ import json
 import threading
 import uuid
 
+import os
 import torch
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from transformers import (
     AutoModelForCausalLM,
@@ -260,3 +262,17 @@ def get_generation(generation_id: str):
             detail=f"Generation ID '{generation_id}' not found in cache.",
         )
     return generation_cache[generation_id]
+
+
+# Mount compiled frontend static assets if available (Production / Unified Container)
+STATIC_DIRS = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dist")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")),
+    os.path.abspath("dist"),
+]
+
+for s_dir in STATIC_DIRS:
+    if os.path.isdir(s_dir):
+        print(f"Mounting static frontend files from: {s_dir}")
+        app.mount("/", StaticFiles(directory=s_dir, html=True), name="static")
+        break
