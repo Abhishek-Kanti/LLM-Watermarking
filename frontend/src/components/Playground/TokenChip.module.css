@@ -1,0 +1,63 @@
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 1px 4px;
+  margin: 1px 1px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: pre-wrap;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.green {
+  background-color: var(--color-green-paper);
+  color: var(--color-green-ink);
+  border-color: var(--color-green-border);
+}
+
+.red {
+  background-color: var(--color-red-paper);
+  color: var(--color-red-ink);
+  border-color: var(--color-red-border);
+}
+
+/* Hovered token: strong focus ring */
+.hovered {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 1px var(--color-accent);
+  background-color: var(--color-accent-subtle) !important;
+  color: var(--color-ink) !important;
+  z-index: 10;
+}
+
+/* Preceding context tokens in the context-lens */
+.inContext {
+  border-color: var(--color-context-border) !important;
+  background-color: var(--color-context-paper) !important;
+  color: var(--color-context-ink) !important;
+  box-shadow: 0 0 0 1px var(--color-context-border);
+}
+
+/* Semantic indicator dot for accessibility (colorblind support per requirement 20) */
+.semanticDot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: 1px;
+  flex-shrink: 0;
+}
+
+.green .semanticDot {
+  background-color: var(--color-green-dot);
+}
+
+.red .semanticDot {
+  background-color: var(--color-red-dot);
+}

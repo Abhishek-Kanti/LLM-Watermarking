@@ -1,0 +1,89 @@
+.tableContainer {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-paper-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+}
+
+.tableHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-rule-subtle);
+}
+
+.tableTitle {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.table th {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-muted);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+.table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-rule-subtle);
+  color: var(--color-ink-2);
+}
+
+.metricName {
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.valueCell {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.detectedYes {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-green-ink);
+}
+
+.detectedNo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-ink-muted);
+}
+
+.diffBadgeNegative {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-red-ink);
+  background: var(--color-red-paper);
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-left: 6px;
+}
+
+.diffBadgePositive {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-green-ink);
+  background: var(--color-green-paper);
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-left: 6px;
+}

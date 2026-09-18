@@ -26,6 +26,8 @@ def detect_watermark(
     vocab_size: int | None = None,
     text: str | None = None,
     token_ids: list[int] | None = None,
+    enable_thinking: bool = False,
+    detection_threshold: float = 3.0,
 ):
     """
     Detect a watermark in generated text.
@@ -55,10 +57,17 @@ def detect_watermark(
         }
     ]
 
+    chat_template_kwargs = {
+        "tokenize": True,
+        "add_generation_prompt": True,
+    }
+    # If the tokenizer's chat_template supports enable_thinking, pass it
+    if hasattr(tokenizer, "chat_template") and tokenizer.chat_template and "enable_thinking" in tokenizer.chat_template:
+        chat_template_kwargs["enable_thinking"] = enable_thinking
+
     prompt_output = tokenizer.apply_chat_template(
         messages,
-        tokenize=True,
-        add_generation_prompt=True,
+        **chat_template_kwargs,
     )
 
     # Extract raw token ID list from BatchEncoding, Tensor, or list
@@ -221,8 +230,6 @@ def detect_watermark(
     # ---------------------------------------------------------
     # 8. Detection decision
     # ---------------------------------------------------------
-
-    detection_threshold = 4.0
 
     detected = (
         z_score >= detection_threshold

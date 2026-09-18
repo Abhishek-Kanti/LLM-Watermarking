@@ -9,5 +9,17 @@ services:
       - huggingface-cache:/root/.cache/huggingface
     restart: unless-stopped
 
+  frontend:
+    build: ./frontend
+    container_name: llm-watermarking-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 volumes:
   huggingface-cache:

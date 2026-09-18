@@ -1,0 +1,149 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: help;
+  color: inherit;
+  border-bottom: 1px dotted var(--color-ink-muted);
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-accent);
+}
+
+.helpIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--color-rule);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--color-ink-muted);
+  background: var(--color-paper-2);
+}
+
+.bubble {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: max-content;
+  max-width: 280px;
+  padding: var(--space-3);
+  background-color: var(--color-graphite-bg);
+  color: var(--color-graphite-text);
+  border: 1px solid var(--color-graphite-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-overlay);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+  transition-delay: 500ms; /* 500ms hover delay per requirement */
+}
+
+.bubble.alignLeft {
+  left: 0;
+  transform: translateX(0) translateY(4px);
+}
+
+.bubble.alignRight {
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(4px);
+}
+
+/* Arrow */
+.bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--color-graphite-bg) transparent transparent transparent;
+}
+
+.bubble.alignLeft::after {
+  left: 16px;
+}
+
+.bubble.alignRight::after {
+  left: auto;
+  right: 16px;
+}
+
+.tooltipContainer:hover .bubble,
+.tooltipContainer:focus-within .bubble,
+.bubble.forceVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltipContainer:hover .bubble.alignLeft,
+.tooltipContainer:focus-within .bubble.alignLeft,
+.bubble.alignLeft.forceVisible {
+  transform: translateX(0) translateY(0);
+}
+
+.tooltipContainer:hover .bubble.alignRight,
+.tooltipContainer:focus-within .bubble.alignRight,
+.bubble.alignRight.forceVisible {
+  transform: translateX(0) translateY(0);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-graphite-text);
+}
+
+.symbol {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-accent);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+}
+
+.summary {
+  color: var(--color-graphite-muted);
+}
+
+.formula {
+  margin-top: 6px;
+  padding: 3px 6px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-accent-contrast);
+}

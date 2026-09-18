@@ -1,0 +1,188 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Verdict banner */
+.verdictCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-rule);
+  background-color: var(--color-paper-2);
+}
+
+.verdictCard.detected {
+  border-color: var(--color-green-border);
+  background-color: var(--color-green-paper);
+}
+
+.verdictCard.likely {
+  border-color: var(--color-accent-border);
+  background-color: var(--color-accent-subtle);
+}
+
+.verdictCard.notDetected {
+  border-color: var(--color-rule);
+  background-color: var(--color-paper-2);
+}
+
+.verdictLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.verdictTitle {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.verdictSubtitle {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+}
+
+.modeBadge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper-card);
+  color: var(--color-ink-2);
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--space-3);
+}
+
+.metricTile {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  background: var(--color-paper-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+}
+
+.metricValue {
+  font-family: var(--font-mono);
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-top: 4px;
+}
+
+.metricSub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-ink-muted);
+  margin-top: 2px;
+}
+
+/* Distribution Bar */
+.distributionSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-paper-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+}
+
+.distHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.barTrack {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: var(--color-paper-3);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  display: flex;
+  border: 1px solid var(--color-rule-subtle);
+}
+
+.barGreen {
+  height: 100%;
+  background-color: var(--color-green-dot);
+  transition: width var(--transition-normal);
+}
+
+.barRed {
+  height: 100%;
+  background-color: var(--color-red-dot);
+  transition: width var(--transition-normal);
+}
+
+.expectedMarker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-ink);
+  z-index: 5;
+}
+
+.expectedMarker::after {
+  content: "Expected";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--color-ink-muted);
+}
+
+/* Z-Score Meter */
+.zScoreMeter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-paper-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+}
+
+.zBarTrack {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: var(--color-paper-3);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-rule-subtle);
+}
+
+.zBarFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-xs);
+  transition: width var(--transition-normal);
+}
+
+.zThresholdLine {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--color-green-ink);
+  z-index: 5;
+}

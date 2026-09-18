@@ -1,0 +1,138 @@
+.workbench {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.outputHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.outputActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper-card);
+  color: var(--color-ink-2);
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.toolBtn:hover {
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  border-color: var(--color-rule-focus);
+}
+
+.toolBtn.active {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+  border-color: var(--color-accent-border);
+}
+
+.tokenCanvas {
+  min-height: 140px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background-color: var(--color-paper-card);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.streamingText {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-ink);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--color-ink-muted);
+  text-align: center;
+  padding: var(--space-6);
+  gap: var(--space-2);
+}
+
+.emptyTitle {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-ink-2);
+}
+
+.emptySubtitle {
+  font-size: 0.8rem;
+  max-width: 360px;
+  line-height: 1.5;
+}
+
+.streamingIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+}
+
+.tokenLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  margin-top: var(--space-2);
+  padding: 4px 8px;
+  background: var(--color-paper-2);
+  border-radius: var(--radius-xs);
+  color: var(--color-ink-muted);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.errorBanner {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-red-paper);
+  color: var(--color-red-ink);
+  border: 1px solid var(--color-red-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}

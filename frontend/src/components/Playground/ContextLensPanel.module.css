@@ -1,0 +1,70 @@
+.lensBox {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-paper-2);
+  border: 1px solid var(--color-context-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-ink-2);
+  animation: fadeIn 150ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.lensTitle {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tokenTarget {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-accent-subtle);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-accent-border);
+}
+
+.contextSnippet {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 4px 8px;
+  margin: 6px 0;
+  background: var(--color-context-paper);
+  border: 1px solid var(--color-context-border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-context-ink);
+}
+
+.contextToken {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.explanation {
+  font-size: 0.76rem;
+  color: var(--color-ink-muted);
+}

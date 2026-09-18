@@ -5,6 +5,7 @@ import uuid
 
 import torch
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from transformers import (
@@ -26,6 +27,15 @@ CACHE_MAX_SIZE = 100
 MODEL_NAME = "Qwen/Qwen3-0.6B"
 
 app = FastAPI(title="LLM Watermarking Playground")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["X-Generation-ID"],
+)
 
 
 print("Loading model...")
@@ -56,6 +66,7 @@ class GenerateRequest(BaseModel):
 
     max_tokens: int = 100
     stream_format: str = "text"  # "text" (default) or "sse"
+    enable_thinking: bool = False
 
 
 class DetectRequest(BaseModel):
@@ -68,6 +79,8 @@ class DetectRequest(BaseModel):
 
     context_length: int = 4
     green_fraction: float = 0.5
+    enable_thinking: bool = False
+    detection_threshold: float = 3.0
 
 
 @app.get("/")
@@ -90,12 +103,18 @@ def generate(request: GenerateRequest):
 
     # Qwen's chat template converts the conversation into
     # the exact token sequence expected by the model.
+    chat_template_kwargs = {
+        "tokenize": True,
+        "add_generation_prompt": True,
+        "return_tensors": "pt",
+        "return_dict": True,
+    }
+    if hasattr(tokenizer, "chat_template") and tokenizer.chat_template and "enable_thinking" in tokenizer.chat_template:
+        chat_template_kwargs["enable_thinking"] = request.enable_thinking
+
     model_inputs = tokenizer.apply_chat_template(
         messages,
-        tokenize=True,
-        add_generation_prompt=True,
-        return_tensors="pt",
-        return_dict=True,
+        **chat_template_kwargs,
     ).to(model.device)
 
     streamer = TextIteratorStreamer(
@@ -150,6 +169,7 @@ def generate(request: GenerateRequest):
             "secret_key": request.secret_key,
             "context_length": request.context_length,
             "green_fraction": request.green_fraction,
+            "enable_thinking": request.enable_thinking,
         }
         if len(generation_cache) > CACHE_MAX_SIZE:
             generation_cache.popitem(last=False)
@@ -197,6 +217,7 @@ def generate(request: GenerateRequest):
 def detect(request: DetectRequest):
 
     token_ids = request.token_ids
+    enable_thinking = request.enable_thinking
 
     # If generation_id is provided, retrieve the preserved token IDs
     if not token_ids and request.generation_id:
@@ -209,6 +230,8 @@ def detect(request: DetectRequest):
         token_ids = cached["token_ids"]
         if not request.prompt and cached.get("prompt"):
             request.prompt = cached["prompt"]
+        if "enable_thinking" in cached:
+            enable_thinking = cached["enable_thinking"]
 
     result = detect_watermark(
         prompt=request.prompt,
@@ -219,6 +242,8 @@ def detect(request: DetectRequest):
         secret_key=request.secret_key,
         context_length=request.context_length,
         green_fraction=request.green_fraction,
+        enable_thinking=enable_thinking,
+        detection_threshold=request.detection_threshold,
     )
 
     if request.generation_id:
