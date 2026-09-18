@@ -85,9 +85,10 @@ class DetectRequest(BaseModel):
     detection_threshold: float = 3.0
 
 
-@app.get("/")
-def root():
+@app.get("/health")
+def health():
     return {
+        "status": "ok",
         "message": "LLM Watermarking API is running"
     }
 
@@ -274,5 +275,13 @@ STATIC_DIRS = [
 for s_dir in STATIC_DIRS:
     if os.path.isdir(s_dir):
         print(f"Mounting static frontend files from: {s_dir}")
+        index_html = os.path.join(s_dir, "index.html")
+        if os.path.isfile(index_html):
+            from fastapi.responses import FileResponse
+
+            @app.get("/", include_in_schema=False)
+            def serve_root():
+                return FileResponse(index_html)
+
         app.mount("/", StaticFiles(directory=s_dir, html=True), name="static")
         break
