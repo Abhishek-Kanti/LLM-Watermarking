@@ -56,6 +56,8 @@ export const App: React.FC = () => {
     // Token inspection
     hoveredTokenIndex,
     setHoveredTokenIndex,
+    pinnedTokenIndex,
+    togglePinToken,
   } = useWatermarking();
 
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -133,6 +135,8 @@ export const App: React.FC = () => {
               onResetText={resetToOriginal}
               hoveredTokenIndex={hoveredTokenIndex}
               onHoverToken={setHoveredTokenIndex}
+              pinnedTokenIndex={pinnedTokenIndex}
+              onTogglePinToken={togglePinToken}
             />
           </section>
         </div>

@@ -136,3 +136,50 @@
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
 }
+
+@media (max-width: 768px) {
+  .outputHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .titleArea {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .outputActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .toolBtn {
+    flex: 1 1 auto;
+    min-height: 32px;
+    justify-content: center;
+    padding: 6px 8px;
+    font-size: 0.74rem;
+  }
+
+  .tokenLegend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .tokenLegend .legendItem:last-child {
+    margin-left: 0 !important;
+    padding-top: 4px;
+    border-top: 1px solid var(--color-rule-subtle);
+    width: 100%;
+  }
+
+  .tokenCanvas {
+    padding: var(--space-3);
+    max-height: 320px;
+    font-size: 0.86rem;
+  }
+}

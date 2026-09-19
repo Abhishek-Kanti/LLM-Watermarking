@@ -143,3 +143,28 @@
   font-size: 0.72rem;
   color: var(--color-ink-muted);
 }
+
+@media (max-width: 640px) {
+  .editorContainer {
+    padding: var(--space-3);
+  }
+
+  .actionBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .actionButtons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .redetectBtn,
+  .resetBtn {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 38px;
+    font-size: 0.8rem;
+  }
+}

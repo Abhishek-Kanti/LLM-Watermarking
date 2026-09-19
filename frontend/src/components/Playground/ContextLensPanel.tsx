@@ -4,26 +4,30 @@ import { TokenClassification } from '../../types/api';
 
 interface ContextLensPanelProps {
   tokens: TokenClassification[];
-  hoveredIndex: number;
+  activeIndex: number;
   contextLength: number;
+  isPinned: boolean;
+  onUnpin?: () => void;
 }
 
 export const ContextLensPanel: React.FC<ContextLensPanelProps> = ({
   tokens,
-  hoveredIndex,
+  activeIndex,
   contextLength,
+  isPinned,
+  onUnpin,
 }) => {
-  const targetToken = tokens[hoveredIndex];
+  const targetToken = tokens[activeIndex];
   if (!targetToken) return null;
 
   // The preceding context tokens that determined this token's green/red split
-  const startIdx = Math.max(0, hoveredIndex - contextLength);
-  const contextTokens = tokens.slice(startIdx, hoveredIndex);
+  const startIdx = Math.max(0, activeIndex - contextLength);
+  const contextTokens = tokens.slice(startIdx, activeIndex);
 
   return (
     <div className={styles.lensBox} role="region" aria-label="Context Lens details">
       <div className={styles.titleRow}>
-        <span className={styles.lensTitle}>
+        <div className={styles.lensTitle}>
           <span>Context Lens:</span>
           <span className={styles.tokenTarget}>
             &quot;{targetToken.token}&quot; (ID: {targetToken.token_id})
@@ -39,8 +43,27 @@ export const ContextLensPanel: React.FC<ContextLensPanelProps> = ({
           >
             ● {targetToken.color}
           </span>
-        </span>
-        <span className="mono-label">h = {contextLength}</span>
+          {isPinned && (
+            <span className={styles.pinnedTag} title="Token pinned. Click token again or ✕ to unpin">
+              PINNED
+            </span>
+          )}
+        </div>
+
+        <div className={styles.rightActions}>
+          <span className="mono-label">h = {contextLength}</span>
+          {isPinned && onUnpin && (
+            <button
+              type="button"
+              className={styles.unpinBtn}
+              onClick={onUnpin}
+              title="Unpin context lens"
+              aria-label="Unpin context lens"
+            >
+              ✕ Unpin
+            </button>
+          )}
+        </div>
       </div>
 
       <div className={styles.contextSnippet}>
@@ -62,6 +85,7 @@ export const ContextLensPanel: React.FC<ContextLensPanelProps> = ({
 
       <p className={styles.explanation}>
         This {contextTokens.length}-token context sequence combined with the secret key seeded the pseudo-random generator, deterministically designating &quot;{targetToken.token}&quot; as {targetToken.color}.
+        {isPinned ? ' (Click or tap the token again to unpin)' : ' (Click or tap any token to lock this inspection)'}
       </p>
     </div>
   );

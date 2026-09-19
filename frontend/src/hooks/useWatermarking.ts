@@ -42,6 +42,11 @@ export function useWatermarking() {
 
   // Token Inspection / Context-Lens State
   const [hoveredTokenIndex, setHoveredTokenIndex] = useState<number | null>(null);
+  const [pinnedTokenIndex, setPinnedTokenIndex] = useState<number | null>(null);
+
+  const togglePinToken = useCallback((idx: number) => {
+    setPinnedTokenIndex((prev) => (prev === idx ? null : idx));
+  }, []);
 
   // Abort Controller for in-flight requests
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -58,6 +63,8 @@ export function useWatermarking() {
     setTemperature(preset.temperature);
     setTopP(preset.top_p);
     setMaxTokens(preset.max_tokens);
+    setPinnedTokenIndex(null);
+    setHoveredTokenIndex(null);
   }, []);
 
   // Detect original untouched generation
@@ -116,6 +123,7 @@ export function useWatermarking() {
     setOriginalDetection(null);
     setModifiedDetection(null);
     setHoveredTokenIndex(null);
+    setPinnedTokenIndex(null);
     setHasGenerated(false);
 
     let accumulatedText = '';
@@ -306,5 +314,8 @@ export function useWatermarking() {
     // Token inspection
     hoveredTokenIndex,
     setHoveredTokenIndex,
+    pinnedTokenIndex,
+    setPinnedTokenIndex,
+    togglePinToken,
   };
 }

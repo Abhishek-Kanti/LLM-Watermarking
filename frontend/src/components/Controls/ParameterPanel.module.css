@@ -588,3 +588,65 @@ input:checked + .sliderRound:before {
 .resetAllBtn:hover:not(:disabled) {
   color: var(--color-ink);
 }
+
+/* Mobile & Touch Layout Enhancements */
+@media (max-width: 640px) {
+  .keycapHint {
+    display: none;
+  }
+
+  .btnKbd {
+    display: none;
+  }
+
+  .labelRow {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .presetChip {
+    padding: 4px 9px;
+    font-size: 0.72rem;
+    min-height: 28px;
+  }
+
+  .quickBtn {
+    padding: 4px 9px;
+    font-size: 0.72rem;
+    min-height: 28px;
+  }
+
+  .slider::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  .generateButton {
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+
+  .stopButton {
+    padding: 12px 16px;
+    min-height: 44px;
+  }
+
+  .secretKeyWrapper {
+    padding: 2px 8px;
+  }
+
+  .secretKeyInput {
+    padding: 8px 0;
+    font-size: 0.85rem;
+  }
+
+  .miniBtn {
+    padding: 4px 8px;
+    min-height: 26px;
+  }
+}

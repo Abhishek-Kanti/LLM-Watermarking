@@ -150,3 +150,26 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+@media (max-width: 640px) {
+  .backdrop {
+    padding: var(--space-2);
+  }
+  .modal {
+    max-height: 94vh;
+  }
+  .header {
+    padding: var(--space-2) var(--space-3);
+  }
+  .body {
+    padding: var(--space-3);
+  }
+  .columnCard {
+    padding: var(--space-3);
+  }
+  .runBtn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+}

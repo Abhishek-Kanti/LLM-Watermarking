@@ -20,7 +20,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  gap: var(--space-2);
 }
 
 .lensTitle {
@@ -31,6 +32,47 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pinnedTag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  letter-spacing: 0.04em;
+}
+
+.rightActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.unpinBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-xs);
+  background: var(--color-paper-card);
+  color: var(--color-ink-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.unpinBtn:hover {
+  border-color: var(--color-red-border);
+  color: var(--color-red-ink);
+  background: var(--color-red-paper);
 }
 
 .tokenTarget {

@@ -103,3 +103,19 @@
   font-size: 0.7rem;
   color: var(--color-ink-muted);
 }
+
+@media (max-width: 640px) {
+  .backdrop {
+    padding: var(--space-3);
+    padding-top: 5vh;
+  }
+  .palette {
+    max-height: 85vh;
+  }
+  .commandItem {
+    padding: 10px 12px;
+  }
+  .footer {
+    display: none;
+  }
+}

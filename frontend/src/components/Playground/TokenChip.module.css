@@ -35,6 +35,24 @@
   z-index: 10;
 }
 
+/* Pinned token: prominent border, solid cobalt ring, slightly elevated */
+.pinned {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 2px var(--color-accent) !important;
+  background-color: var(--color-accent-subtle) !important;
+  color: var(--color-ink) !important;
+  font-weight: 600;
+  z-index: 15;
+}
+
+.pinIndicator {
+  display: inline-block;
+  font-size: 0.55rem;
+  color: var(--color-accent);
+  margin-left: 3px;
+  vertical-align: 1px;
+}
+
 /* Preceding context tokens in the context-lens */
 .inContext {
   border-color: var(--color-context-border) !important;
@@ -60,4 +78,15 @@
 
 .red .semanticDot {
   background-color: var(--color-red-dot);
+}
+
+/* Mobile Touch Optimization: enlarged touch area and comfortable tap targets */
+@media (max-width: 640px) {
+  .chip {
+    padding: 3px 6px;
+    margin: 2px 2px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    touch-action: manipulation;
+  }
 }

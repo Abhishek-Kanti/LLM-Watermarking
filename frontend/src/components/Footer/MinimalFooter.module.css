@@ -36,3 +36,17 @@
 .tag {
   color: var(--color-ink-2);
 }
+
+@media (max-width: 640px) {
+  .inner {
+    padding: 0 var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .metaTags {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+}

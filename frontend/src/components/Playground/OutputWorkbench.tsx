@@ -26,6 +26,8 @@ interface OutputWorkbenchProps {
   onResetText: () => void;
   hoveredTokenIndex: number | null;
   onHoverToken: (idx: number | null) => void;
+  pinnedTokenIndex: number | null;
+  onTogglePinToken: (idx: number) => void;
 }
 
 export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
@@ -46,6 +48,8 @@ export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
   onResetText,
   hoveredTokenIndex,
   onHoverToken,
+  pinnedTokenIndex,
+  onTogglePinToken,
 }) => {
   const [copied, setCopied] = useState(false);
   const [viewMode, setViewMode] = useState<'tokens' | 'raw'>('tokens');
@@ -60,10 +64,11 @@ export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
   };
 
   const tokens = originalDetection?.tokens || [];
+  const activeTokenIndex = hoveredTokenIndex !== null ? hoveredTokenIndex : pinnedTokenIndex;
 
   return (
     <div className={`hairline-card ${styles.workbench}`}>
-      <div className="panel-header">
+      <div className={`panel-header ${styles.outputHeader}`}>
         <div className={styles.titleArea}>
           <span className="panel-title">Generation & Token Inspector</span>
           {isGenerating && (
@@ -159,10 +164,11 @@ export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
               {viewMode === 'tokens' && tokens.length > 0 ? (
                 tokens.map((tokenData, idx) => {
                   const isHovered = hoveredTokenIndex === idx;
+                  const isPinned = pinnedTokenIndex === idx;
                   const isInContext =
-                    hoveredTokenIndex !== null &&
-                    idx >= Math.max(0, hoveredTokenIndex - contextLength) &&
-                    idx < hoveredTokenIndex;
+                    activeTokenIndex !== null &&
+                    idx >= Math.max(0, activeTokenIndex - contextLength) &&
+                    idx < activeTokenIndex;
 
                   return (
                     <TokenChip
@@ -170,8 +176,10 @@ export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
                       tokenData={tokenData}
                       index={idx}
                       isHovered={isHovered}
+                      isPinned={isPinned}
                       isInContext={isInContext}
                       onHover={onHoverToken}
+                      onSelect={onTogglePinToken}
                     />
                   );
                 })
@@ -206,17 +214,23 @@ export const OutputWorkbench: React.FC<OutputWorkbenchProps> = ({
                   <span>Red Token (Unbiased)</span>
                 </span>
                 <span className={styles.legendItem} style={{ marginLeft: 'auto' }}>
-                  <span>Hover any token to inspect its {contextLength}-token hash context</span>
+                  <span>Hover or click/tap any token to lock its {contextLength}-token hash context</span>
                 </span>
               </div>
             )}
 
             {/* Context Lens Details */}
-            {hoveredTokenIndex !== null && tokens.length > 0 && (
+            {activeTokenIndex !== null && tokens.length > 0 && (
               <ContextLensPanel
                 tokens={tokens}
-                hoveredIndex={hoveredTokenIndex}
+                activeIndex={activeTokenIndex}
                 contextLength={contextLength}
+                isPinned={pinnedTokenIndex !== null}
+                onUnpin={() => {
+                  if (pinnedTokenIndex !== null) {
+                    onTogglePinToken(pinnedTokenIndex);
+                  }
+                }}
               />
             )}
           </div>

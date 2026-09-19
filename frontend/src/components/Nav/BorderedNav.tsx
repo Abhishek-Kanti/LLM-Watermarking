@@ -35,16 +35,24 @@ export const BorderedNav: React.FC<BorderedNavProps> = ({
             λ
           </div>
           <div className={styles.titleWrapper}>
-            <span className={styles.brandTitle}>LLM Watermarking Workbench</span>
+            <span className={styles.brandTitle}>
+              <span className={styles.titleFull}>LLM Watermarking Workbench</span>
+              <span className={styles.titleShort}>Watermark Lab</span>
+            </span>
             <span className={styles.modelBadge}>Qwen3-0.6B · Kirchenbauer et al. (2023)</span>
           </div>
 
           <div
-            className={`status-chip ${isBackendHealthy ? 'success' : ''}`}
+            className={`status-chip ${isBackendHealthy ? 'success' : ''} ${styles.navStatusChip}`}
             title={isBackendHealthy ? 'Connected to backend on port 8000' : 'Checking backend...'}
           >
             <span className="status-dot" />
-            <span>{isBackendHealthy === true ? 'API LIVE' : isBackendHealthy === false ? 'OFFLINE' : 'CONNECTING'}</span>
+            <span className={styles.statusLabelFull}>
+              {isBackendHealthy === true ? 'API LIVE' : isBackendHealthy === false ? 'OFFLINE' : 'CONNECTING'}
+            </span>
+            <span className={styles.statusLabelShort}>
+              {isBackendHealthy === true ? 'LIVE' : isBackendHealthy === false ? 'OFF' : '...'}
+            </span>
           </div>
         </div>
 
@@ -71,7 +79,8 @@ export const BorderedNav: React.FC<BorderedNavProps> = ({
             onClick={onOpenCompareModal}
             title="Compare watermarked vs unwatermarked baseline"
           >
-            <span>Compare Runs</span>
+            <span className={styles.btnFull}>Compare Runs</span>
+            <span className={styles.btnShort}>Compare</span>
           </button>
 
           <button

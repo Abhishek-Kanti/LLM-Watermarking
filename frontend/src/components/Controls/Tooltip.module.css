@@ -147,3 +147,10 @@
   font-size: 0.72rem;
   color: var(--color-accent-contrast);
 }
+
+@media (max-width: 480px) {
+  .bubble {
+    max-width: min(260px, calc(100vw - 32px));
+    font-size: 0.75rem;
+  }
+}
